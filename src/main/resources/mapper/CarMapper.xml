@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prudential.car.mapper.CarMapper">
+    <resultMap id="BaseResultMap" type="com.prudential.car.entity.Car">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="deleted" jdbcType="INTEGER" property="deleted"/>
+        <result column="model" jdbcType="VARCHAR" property="model"/>
+        <result column="stock" jdbcType="INTEGER" property="stock"/>
+        <result column="picture" jdbcType="VARCHAR" property="picture"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="created_time" jdbcType="DATE" property="createdTime"/>
+        <result column="modified_time" jdbcType="DATE" property="modifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, deleted, model, stock, picture, description, price, created_time, modified_time
+    </sql>
+
+    <select id="listCar" resultType="com.prudential.car.vo.CarVO">
+        select id, model, picture, description, price
+        from b_car
+        where deleted = 0
+        and stock > 0
+    </select>
+    
+    <update id="reduceStock" >
+        update b_car
+        set stock = stock - 1
+        where deleted = 0
+        and id = #{id}
+        and stock >= 1
+    </update>
+
+    <update id="addStock">
+        update b_car
+        set stock = stock + 1
+        where deleted = 0
+        and id = #{id}
+    </update>
+
+</mapper>

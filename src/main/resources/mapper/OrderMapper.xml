@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prudential.car.mapper.OrderMapper">
+    <resultMap id="BaseResultMap" type="com.prudential.car.entity.Order">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="deleted" jdbcType="INTEGER" property="deleted"/>
+        <result column="rental_start_time" jdbcType="TIMESTAMP" property="rentalStartTime"/>
+        <result column="rental_end_time" jdbcType="TIMESTAMP" property="rentalEndTime"/>
+        <result column="actual_return_time" jdbcType="TIMESTAMP" property="actualReturnTime"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="customer_id" jdbcType="INTEGER" property="customerId"/>
+        <result column="car_model_id" jdbcType="INTEGER" property="carModelId"/>
+        <result column="car_model" jdbcType="VARCHAR" property="carModel"/>
+        <result column="total_amount" jdbcType="DECIMAL" property="totalAmount"/>
+        <result column="paid_amount" jdbcType="DECIMAL" property="paidAmount"/>
+        <result column="residual_amount" jdbcType="DECIMAL" property="residualAmount"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, deleted, rental_start_time, rental_end_time, actual_return_time, state, customer_id, car_model_id, car_model, total_amount, paid_amount, residual_amount, created_time, modified_time
+    </sql>
+
+    <select id="listOrder" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from b_order
+        where deleted = 0
+        and customer_id = #{customerId}
+    </select>
+
+    <select id="getOrderById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from b_order
+        where deleted = 0
+        and id = #{orderId}
+    </select>
+
+    <insert id="insertOrder" parameterType="com.prudential.car.entity.Order">
+        insert into b_order (
+        id,
+        rental_start_time,
+        rental_end_time,
+        actual_return_time,
+        state,
+        customer_id,
+        car_model_id,
+        car_model,
+        total_amount,
+        paid_amount,
+        residual_amount,
+        created_time,
+        modified_time
+        )
+        values (
+        #{id},
+        #{rentalStartTime},
+        #{rentalEndTime},
+        #{actualReturnTime},
+        #{state},
+        #{customerId},
+        #{carModelId},
+        #{carModel},
+        #{totalAmount},
+        #{paidAmount},
+        #{residualAmount},
+        #{createdTime},
+        #{modifiedTime}
+        )
+    </insert>
+
+    <update id="updateOrder" parameterType="com.prudential.car.entity.Order">
+        update b_order
+        <set>
+            <if test="rentalStartTime != null">
+                rental_start_time = #{rentalStartTime},
+            </if>
+            <if test="rentalEndTime != null">
+                rental_end_time = #{rentalEndTime},
+            </if>
+            <if test="actualReturnTime != null">
+                actual_return_time = #{actualReturnTime},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+            <if test="customerId != null">
+                customer_id = #{customerId},
+            </if>
+            <if test="carModelId != null">
+                car_model_id = #{carModelId},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount},
+            </if>
+            <if test="paidAmount != null">
+                paid_amount = #{paidAmount},
+            </if>
+            <if test="residualAmount != null">
+                residual_amount = #{residualAmount},
+            </if>
+            modified_time = #{modifiedTime}
+        </set>
+        where deleted = 0
+        and id = #{id}
+    </update>
+
+    <update id="cancelOrder" parameterType="java.lang.Long">
+        update b_order
+        set state = 5
+        where deleted = 0
+        and id = #{orderId}
+    </update>
+
+</mapper>
